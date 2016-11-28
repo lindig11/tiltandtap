@@ -1,0 +1,50 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<script src="../dist/tiltandtap.js"></script>
+
+	<style>
+		#box{
+		width: 200px;
+		height: 200px;
+		position: absolute;
+		background-color: green;
+		}
+	</style>
+</head>
+
+
+<body>
+
+<div id="box">
+<p id="result"> </p>
+</div>
+
+
+<script>
+var mytat = new tiltandtap({
+	tiltUp : {callback:up, touch:"hold", element:"#box"},
+	tiltDown: {callback:down, touch:"hold", element:"#box"}
+
+});
+
+function up ()
+{
+	p_result.innerHTML = "up";
+	box.style.backgroundColor = "green";
+	console.log("hold tap + tilt up");
+}
+
+function down() 
+{
+	p_result.innerHTML = "down";
+	box.style.backgroundColor = "orange";
+	console.log("hold tap + down");
+}
+
+</script>
+
+</body>
+
+</html>

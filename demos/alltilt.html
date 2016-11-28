@@ -1,0 +1,93 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<script src="../dist/tiltandtap.js"></script>
+
+	<style>
+		#box{
+		width: 200px;
+		height: 200px;
+		position: absolute;
+		background-color: green;
+		}
+	</style>
+</head>
+
+
+<body>
+
+<div id="box">
+<p id="result"> </p>
+</div>
+
+
+<script>
+var mytat = new tiltandtap({
+	tiltLeft :  {callback:left},
+	tiltRight : {callback:right},
+	tiltUp :    {callback:up},
+	tiltDown:   {callback:down},
+	tiltClockwise: {callback:clockwise},
+	tiltConterclockwise : {callback: cc}
+});
+
+var box = document.querySelector("#box");
+var p_result = document.querySelector("#result").innerHTML;
+
+function left()
+{
+	p_result.innerHTML = "left";
+	box.style.backgroundColor = "red";
+	console.log("tilt left");
+}
+
+function right() 
+{
+	p_result.innerHTML = "right";
+	box.style.backgroundColor = "blue";
+	console.log("tilt right");
+}
+
+function up ()
+{
+	p_result.innerHTML = "up";
+	box.style.backgroundColor = "green";
+	console.log("tilt up");
+}
+
+function down() 
+{
+	p_result.innerHTML = "down";
+	box.style.backgroundColor = "orange";
+	console.log("tilt down");
+}
+
+function clockwise() 
+{
+	p_result.innerHTML = "clockwise";
+	box.style.backgroundColor = "black";
+	console.log("tilt clockwise");
+}
+
+function cc() 
+{
+	p_result.innerHTML = "counter clockwise";
+	box.style.backgroundColor = "pink";
+	console.log("tilt counter clockwise");
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+</html>
