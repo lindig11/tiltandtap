@@ -1,7 +1,8 @@
 # Tilt-and-Tap
 Tilt-and-Tap is a JavaScript framework that recognize jerk tilting interactions:
 Tilt Up, Tilt Down, Tilt Left, Tilt Right, Tilt Clockwise and Tilt Counter-clockwise.
-Tilting interactions can also be combined to touch gestures (tap, multiple taps and tap hold) on specific DOM elements
+Tilting interactions can also be combined to touch gestures (tap, multiple taps and tap hold) on specific elements.
+**Feel free to contribute to the project!**
 
 # What are tilting interactions?
 A tilt interaction, and more in detail a Jerk-Tilting interaction, is a rapid movement of the mobile device toward some direction (up, down, left, rigth etc.). Tilt-and-Tap tries to simplify the development of such interaction on the web, offering high-level APIs.
@@ -14,6 +15,7 @@ Include the script somewhere in your webpage. Within the header is recommended.
 ```javascript
 <script src="/path/to/tiltandtap.js"></script>
 ```
+No other plugins (jQuery included) are required.
 
 #Example Usage
 All the following demos are available in the demo repository
@@ -119,7 +121,50 @@ function down()
 
 #Options
 
+##tilting options
+For each tilting interaction we support a number of sub-options that can be defined for each gesture.
+
+|__Option Name__   | __Description__   | __Default Value__|__Possible Values__|
+| ------------- |:-------------| :-----:| :-----|
+| __callback__   | callback function to be called once the tilt gesture was recognized  | null| an existing function |
+| __th_android__      | Threshold of gesture for Android devices |   75 | any number  |
+| __th_ios__      | Threshold of gesture for iOS |   180 | any number  |
+| __touch__ | Tilting gesture can be combined with an additional touch interaction. This option indicates which interaction has to be performed.   |    "none" | "hold" or any positive integer number|
+| __element__ | It indicates where the touch interaction (if indicated) has to be performed.   |    null | a valid ID of an existing element in the DOM|
+
+##global options
+Global option of the plugin.
+
+|__Option Name__   | __Description__   | __Default Value__|__Possible Values__|
+| ------------- |:-------------| :-----:| :-----|
+| __frequency__   | It indicates how frequent motion data should be retrieved | 50 (milliseconds) |  any positive number |
+| __dimbuffer__   | It indicades how fast the gestures should be. The smaller the number the faster [0,+inf] | 3| any positive interger number |
+| __dimbufferdiscard__   | It indicates how many data the framework should discard after a gesture was recognized| 20 |  any positive interger number |
+| __tap_interval__   | It indicates the maximum interval between taps | 200 (milliseconds) |  any positive number |
+| __taphold_interval__   | It indicates the minimum interval for a tap hold interaction| 200 (milliseconds) |  any positive  number |
+| __overlap__   | Tilt-and-Tap uses a window overlap method to recognize gestures. This value indicate how big the overlap should be. | 1 |  any positive interger number |
+| __notSupported__   | Callback function called if the devicemotion event is not supported | "" |  an existing function |
+
+
+###example javascript:
+```javascript
+var mytat = new tiltandtap({
+	tiltUp : [...],
+	dimbuffer: 3,
+	dimbufferdiscard: 20,
+	frequency: 50,
+	overlap:1
+});
+```
+
+
+#Thresholds and TODOs
+Tilt-and-Tap uses thresholds to recognize gestures. These thresholds are platform-dependent. The current default thresholds have been empirically tested but developers can change them for each interaction and for each platform (Android, iOS and Windows Phone) using the right global option. This to give more power to developers to test and try different gestures with different thresholds. 
+General and platform-indipendent labels ("slow", "medium", "fast") to indicate the velocity of the gesture are next in the TODO list.
+
+
 
 #The project
 
 Tilt-and-Tap was developed at ETH Zurich [(globis group)] (https://globis.ethz.ch/) as part of a PhD thesis. Find more [here] (https://globis.ethz.ch/#!/person/linda-di-geronimo/).
+Tilt-and-Tap also includes continuous tilting interactions that can be found [here] (https://github.com/lindig11/WebGravity).
