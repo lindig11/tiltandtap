@@ -18,7 +18,7 @@
 <body>
 
 <div id="box">
-<p id="result"> </p>
+
 </div>
 
 
@@ -30,18 +30,18 @@ var mytat = new tiltandtap({
 });
 
 var box = document.querySelector("#box");
-var p_result = document.querySelector("#result");
+
 
 function up ()
 {
-	p_result.innerHTML = "up";
+
 	box.style.backgroundColor = "green";
 	console.log("hold tap + tilt up");
 }
 
 function down() 
 {
-	p_result.innerHTML = "down";
+
 	box.style.backgroundColor = "orange";
 	console.log("hold tap + down");
 }
