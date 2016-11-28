@@ -374,7 +374,7 @@ function associateTouchEvents(tat)
 				for(var i = 0; i <el.length; i++)
 				{
 					var current = el[i];
-					//if element current does not have already listners attach handlers
+					//if element current does not have already listener attach handlers
 					if(!hasAlreadyListners(arr,element_touch))
 					{
 						addEvents(current,tat);
@@ -415,7 +415,7 @@ function associateTouchEvents(tat)
 			
 		}
 		else
-		{	//if users specified a touch interaction but not correctly, print a warning
+		{	//print a warning if users specified a touch interaction but not correctly
 			if((tat._acceptedParameters.includes(option)) && (tat[option].touch!="none"))
 			{
 				console.warn(option+error_touch);
@@ -446,23 +446,30 @@ function addEvents (element,tat)
 //handler for touch start event
 function touchstart(event,tat) 
 {
-	
+	var arr_touch_target = new Array();
 	var touch = tat._tiltingtouch;
 	for(var i = 0; i<touch.length; i++)
 	{
 		var current = touch[i];
+		
 		if(event.target === current.el)
 		{
-			if(current.touch==="hold")
-			{
-				timer = setTimeout(function () {
-					
-					current.enable = true;
-				},tat.taphold_interval);
-				
-			};
+			arr_touch_target.push(current);
 		}
 	}
+	
+	//check if tap hold for all tilting+touch interactions "binded" to element
+	if(arr_touch_target.length!= 0)
+	{
+		timer = setTimeout(function () {
+			for(i = 0; i<arr_touch_target.length; i++)
+			{
+				arr_touch_target[i].enable = true;
+			}
+		},tat.taphold_interval);
+	
+	}
+	
 	event.stopPropagation();
 }
 
