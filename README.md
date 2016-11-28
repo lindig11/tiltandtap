@@ -5,7 +5,9 @@ Tilting interactions can also be combined to touch gestures (tap, multiple taps 
 
 
 #Installation
+Include the script somewhere in your webpage. Within the header is recommended.
 
+<script src="/path/to/tiltandtap.js"></script>
 
 
 #Example Usage
