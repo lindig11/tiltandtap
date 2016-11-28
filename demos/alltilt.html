@@ -33,7 +33,7 @@ var mytat = new tiltandtap({
 });
 
 var box = document.querySelector("#box");
-var p_result = document.querySelector("#result").innerHTML;
+var p_result = document.querySelector("#result");
 
 function left()
 {
@@ -65,8 +65,8 @@ function down()
 
 function clockwise() 
 {
-	p_result.innerHTML = "clockwise";
-	box.style.backgroundColor = "black";
+	p_result.innerHTML= "clockwise";
+	box.style.backgroundColor = "grey";
 	console.log("tilt clockwise");
 }
 
