@@ -30,6 +30,8 @@
 	var error_message_int = "unfortunately your browser does not support the devicemotion event, please try with another browser/device";
 	var error_touch = ": touch gestures was not recognized for this tilting interaction, please specify: 'hold' or the number of taps as an integer";
 	var error_touch_element = "please specify a correct element for the tilting interaction: "
+	
+	var ts=0;count=0;
 	//==============================constructor===========================//
 	this.tiltandtap = function() {
 	
@@ -47,10 +49,11 @@
 	this.tiltNorthWest = defoptions();
 	
 	this.dimbuffer = 3;
-	this.dimbufferdiscard = 30;
-	this.dimbufferdiscard_fir = 100;
+	this.dimbufferdiscard = 10;
+	this.dimbufferdiscard_fir = 10;
+	
 	this.buffer = new Array();
-	this.frequency = 100;
+	this.frequency = 50;
 	this.overlap = 1;
 	this.notSupported = "";
 	this.tap_interval = 200;
@@ -149,7 +152,7 @@
 		//set right th for all tilting
 		setThresholds(tat);
 		
-		setBufferDiscard(tat);
+
 		
 		//touch events, if dev indicated so
 		tat._tiltingtouch = associateTouchEvents(tat);
@@ -160,11 +163,14 @@
 		if ((window.DeviceMotionEvent)  || ('listenForDeviceMovement' in window)) 
 		{
 			
+			
 			window.addEventListener(
 			'devicemotion', 
 			function(eventData) {
 			deviceMotionHandler(eventData,tat); 
 			},true);
+			
+			
 			
 		}
 		
@@ -185,12 +191,34 @@
   //param: eventdata and tiltandtap object
   //=== implemented via promises ===
   function deviceMotionHandler (eventData, tat)
-  {	
+  {
+	  
+	/*if(count===0)
+	{
+		console.log(eventData);
+		ts = eventData.timeStamp;
+
+		count++;
+		return;
+	}
+	else if (count===1)
+	{
+		
+		var ts2 = eventData.timeStamp;
+		console.log(eventData);
+		ts = ts2-ts;
+		console.log(ts);
+		
+		document.getElementById("test").innerHTML = ts;
+		count++;
+	}
+	*/
+
 	if(tat._ready)
 	{
 		
 		bufferWindow(eventData,tat);
-	//	tat._ready = false;
+		tat._ready = false;
 		
 
 		
@@ -222,11 +250,10 @@
 		}
 		
 		setTimeout(function () {
-		tat._ready= true;
-		},tat._realFrequency);
+		tat._ready = true;
+		},50);
 		
 	}
-	
 	
   }
   
@@ -598,38 +625,18 @@ function hasAlreadyListners(arr,el)
  */
 function calculateRealFrequency(frequency, interval){
 
-	var div = 0;
-	
-	//if interval =0 the device do not support the API, return 0
-	if(interval===0)
+
+	if((frequency<50) || (frequency>=100))
 	{
-		return div;
-	}
-	
-	if(frequency < 100)
-	{
-		console.warn('Some browsers have an interval rate of 100ms, having it lower will make the interaction different depending on the browser used');
-	}
-	
-	if(interval<frequency)
-	{
-		div = Math.floor(frequency/interval);
-		div = div*(interval);
-		
-	}
-	if (interval>frequency)
-	{
-		div = interval;
+		console.warn('It is advided to use a frequency between 50 to 100ms');
+		div = 50;
 	}
 	else
 	{
-		div = interval;
-	}
+		div = frequency;
+	}		
 	
-	if(div!==frequency)
-	{
-		console.warn('Given the interval given by the browser: '+interval+', the frequency: '+frequency+' that you specified was not possible to use. Current frequency used: '+div);
-	}
+	
 	return div;
 
 }
@@ -849,17 +856,6 @@ function setThresholds (tat)
 
 }
 
-//set current dimbufferdiscard (depending on browser) for each tilting interaction
-function setBufferDiscard (tat)
-{
-	var currentos = tat._currentos;
-	if((tat._currentbr==="firefox"))
-	{
-		tat.dimbufferdiscard = tat.dimbufferdiscard_fir;
-	}
-		
-	
-}
 
 
 //create arrays with tilting interaction that dev wants to execute
