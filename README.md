@@ -5,10 +5,11 @@ Tilting interactions can also be combined to touch gestures (tap, multiple taps 
 **Feel free to contribute to the project!**
 
 # What are tilting interactions?
-A tilt interaction, and more in detail a Jerk-Tilting interaction, is a rapid movement of the mobile device toward some direction (up, down, left, rigth etc.). Tilt-and-Tap tries to simplify the development of such interaction on the web, offering high-level APIs.
+A tilt interaction, and more in detail a Jerk-Tilting interaction, is a rapid movement of the mobile device toward some direction (up, down, left, rigth, south-east, south-west, north-east, north-west, clock and counterclockwise). Tilt-and-Tap tries to simplify the development of such interaction on the web, offering high-level APIs.
 
 # Support
-Currently, Tilt-and-Tap works almost everywhere and almost on all the browsers (Firefox is not supported yet). The plugin uses the *devicemotion* event and it internally bridge the differences among devices and browsers.
+Currently, Tilt-and-Tap works almost everywhere and almost on all the browsers. The plugin uses the *devicemotion* event and it internally bridge the differences among devices and browsers.
+Chrome introduced a bug in version 66. For this reason, TAT does not work on Chrome currently.
 
 #Installation
 Include the script somewhere in your webpage. Within the header is recommended.
