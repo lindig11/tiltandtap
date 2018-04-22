@@ -29,7 +29,11 @@ var mytat = new tiltandtap({
 	tiltUp :    {callback:up},
 	tiltDown:   {callback:down},
 	tiltClockwise: {callback:clockwise},
-	tiltConterclockwise : {callback: cc}
+	tiltConterclockwise : {callback: cc},
+	tiltSouthEast : {callback: se},
+	tiltSouthWest : {callback: sw},
+	tiltNorthEast : {callback: ne},
+	tiltNorthWest : {callback: nw}
 });
 
 var box = document.querySelector("#box");
@@ -75,6 +79,34 @@ function cc()
 	p_result.innerHTML = "counter clockwise";
 	box.style.backgroundColor = "pink";
 	console.log("tilt counter clockwise");
+}
+
+function se() 
+{
+	p_result.innerHTML = "south east";
+	box.style.backgroundColor = "yellow";
+	console.log("tilt south east");
+}
+
+function sw() 
+{
+	p_result.innerHTML = "south west";
+	box.style.backgroundColor = "dark blue";
+	console.log("tilt south west");
+}
+
+function ne() 
+{
+	p_result.innerHTML = "north east";
+	box.style.backgroundColor = "violet";
+	console.log("tilt north east");
+}
+
+function nw() 
+{
+	p_result.innerHTML = "north west";
+	box.style.backgroundColor = "dark pink";
+	console.log("tilt north west");
 }
 
 

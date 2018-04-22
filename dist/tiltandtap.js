@@ -41,10 +41,16 @@
 	this.tiltDown = defoptions(),
 	this.tiltClockwise = defoptions();
 	this.tiltConterclockwise = defoptions();
+	this.tiltSouthEast = defoptions();
+	this.tiltSouthWest = defoptions();
+	this.tiltNorthEast = defoptions();
+	this.tiltNorthWest = defoptions();
+	
 	this.dimbuffer = 3;
-	this.dimbufferdiscard = 20;
+	this.dimbufferdiscard = 30;
+	this.dimbufferdiscard_fir = 100;
 	this.buffer = new Array();
-	this.frequency = 50;
+	this.frequency = 100;
 	this.overlap = 1;
 	this.notSupported = "";
 	this.tap_interval = 200;
@@ -66,11 +72,11 @@
 	this._hasbeentilt = false;
 	this._tiltingtouch = new Array;
 	//double step default options
-	this._acceptedParameters = ['tiltLeft','tiltRight','tiltUp','tiltDown','tiltClockwise','tiltConterclockwise'];
+	this._acceptedParameters = ['tiltLeft','tiltRight','tiltUp','tiltDown','tiltClockwise','tiltConterclockwise','tiltSouthEast','tiltSouthWest','tiltNorthEast','tiltNorthWest'];
 	
 
 	
-	//check current os of the device
+	//check current os and browser of the device
 	this._currentbr = "";
 	this._currentos = "";
 
@@ -87,7 +93,9 @@
 		th_android :  75,
 		th_windowsphone : 75,
 		th_ios : 180,
-		th : 75
+		th_firefox : 180,
+		th : 75,
+		th_se_factor : 40
 		};
 	};
 	
@@ -131,7 +139,8 @@
 		//tilts that dev wants to be performed
 		tat._ttoperform = tiltToPerform(tat);
 		//set the map that associates tilting and alpha,beta,gamma and signs
-		tat._mapEvent   = mapTilting(tat);
+		tat._mapEvent   = mapTilting();
+		tat._mapComb = mapComb();
 		//check the browser 
 		tat._currentbr  = checkBrowser();
 		//check current os
@@ -139,6 +148,9 @@
 		
 		//set right th for all tilting
 		setThresholds(tat);
+		
+		setBufferDiscard(tat);
+		
 		//touch events, if dev indicated so
 		tat._tiltingtouch = associateTouchEvents(tat);
 		
@@ -147,24 +159,22 @@
 		//device motion event
 		if ((window.DeviceMotionEvent)  || ('listenForDeviceMovement' in window)) 
 		{
-			//if current browser is Firefox print a warning indicating that tat is not supported and execute function defined by dev.
-			if(tat._currentbr === FIR)
-			{
-				console.warn(error_message_fir);
-				
-				if(typeof tat.notSupported ===  "function") {
-					tat.notSupported.call(this);
-				}
-				
-				return;
-			}
-			//if not firefox:
+			
 			window.addEventListener(
 			'devicemotion', 
 			function(eventData) {
 			deviceMotionHandler(eventData,tat); 
 			},true);
 			
+		}
+		
+		else
+		{
+			if(typeof tat.notSupported ===  "function") {
+					tat.notSupported.call(this);
+				}
+				
+				return;
 		}
 
 		return this;
@@ -239,7 +249,7 @@
 		}
 		else
 		{
-			
+			console.log(eventData);
 			//if tilting interaction wanted by dev 
 			if(tat._ttoperform.includes(obj.type)){
 				//execute callback function defined by dev. and check if it is a function
@@ -291,43 +301,76 @@
 		type : 'none'
 	}
 
-	var energy_rr =energy(tat.buffer,tat._currentos);
+	var energy_rr =energy(tat.buffer,tat._currentos,tat._currentbr);
 	
-	
+	var performedtilt = new Array();
 	for(var i = 0; i<tat._acceptedParameters.length; i++)
 	{
+		//console.log(tilt);
 		var tilt = tat._acceptedParameters[i];
 		
+		
 		var infotilt = tat._mapEvent[tilt];
-		var abg = infotilt["rotationRate"];
-		var sign = infotilt["sign"];
-		//if orientation of the device is landscape use L value of the map
-		var orientation = checkCurrentOrientationDevice();
-		
-		abg=infotilt["rotationRate"+orientation];
-		sign = infotilt["sign"+orientation];
-		
-		var acc_last_value = tat.buffer[tat.dimbuffer-1].rotationRate[abg];
-		
-	
-		if(Math.abs(energy_rr[abg])>=tat[tilt].th)
-		{
-			
-			if(acc_last_value * sign >0)
+		if(tilt!=='tiltSouthEast'&& tilt!=='tiltSouthWest' && tilt!=='tiltNorthEast' && tilt!=='tiltNorthWest')
 			{
+				var abg = infotilt["rotationRate"];
+				var sign = infotilt["sign"];
+				//if orientation of the device is landscape use L value of the map
+				var orientation = checkCurrentOrientationDevice();
 				
-				//checks if some touch interactions where required
-				if(isTouchRequired(tilt,tat._tiltingtouch))
+				abg=infotilt["rotationRate"+orientation];
+				sign = infotilt["sign"+orientation];
+				
+				var acc_last_value = tat.buffer[tat.dimbuffer-1].rotationRate[abg];
+				
+				if(Math.abs(energy_rr[abg])>=tat[tilt].th)
+					{
+						
+						if(acc_last_value * sign >0)
+						{
+							
+							//checks if some touch interactions where required
+							if(isTouchRequired(tilt,tat._tiltingtouch))
+							{
+								to_return.tilt = true;
+								to_return.type = tilt;
+								
+							}
+						}
+					}
+				//lower of a factor the se ne sw and nw tilt	
+				var fact = ((tat[tilt].th_se_factor * tat[tilt].th) /100);
+				var newth = tat[tilt].th - fact;
+				
+				if(Math.abs(energy_rr[abg]) >=newth)
 				{
 					
-					
-					to_return.tilt = true;
-					to_return.type = tilt;
+					if(acc_last_value * sign >0)
+						{
+							
+							//checks if some touch interactions where required
+							if(isTouchRequired(tilt,tat._tiltingtouch))
+							{	
+								performedtilt.push(tilt);
+								
+							}
+						}
 				}
-			
-			}
-		}
+			}	
 	}
+	//console.log(performedtilt);
+	if (performedtilt.length===2)
+	{
+		console.log(performedtilt);
+		var comb = performedtilt[0]+performedtilt[1];
+		to_return.tilt = true;
+		console.log(comb);
+		to_return.type = tat._mapComb[comb];
+		console.log(to_return.type);
+	}
+	performedtilt = [];
+	
+	
 	return to_return;
   }
   
@@ -552,7 +595,6 @@ function hasAlreadyListners(arr,el)
  /*
  given the frequency specified by the user and the interval given by the browser
  calculates real frequency to obtain motion data
- TODO: iOS support
  */
 function calculateRealFrequency(frequency, interval){
 
@@ -563,14 +605,21 @@ function calculateRealFrequency(frequency, interval){
 	{
 		return div;
 	}
-	//TODO: iOS support
-	//
+	
+	if(frequency < 100)
+	{
+		console.warn('Some browsers have an interval rate of 100ms, having it lower will make the interaction different depending on the browser used');
+	}
 	
 	if(interval<frequency)
 	{
 		div = Math.floor(frequency/interval);
 		div = div*(interval);
 		
+	}
+	if (interval>frequency)
+	{
+		div = interval;
 	}
 	else
 	{
@@ -599,7 +648,7 @@ function copyWindowWithOverlap (source,overlap)
 
 //calculate energy of an array of eventData elements
 //if current_os is firefox, return directly the rotationRate data (since they are different from the other browsers)
-function energy(arr,currentos)
+function energy(arr,currentos,currentbr)
 {
 	
 	var energy = {
@@ -616,7 +665,7 @@ function energy(arr,currentos)
 	
 	for (var i =0; i<arr.length; i++)
 	{
-		if(currentos === "ios")
+		if((currentos === "ios") || (currentbr === "firefox"))
 		{
 			energy.alpha+= (arr[i].rotationRate.alpha)/arr.length;
 			energy.beta += (arr[i].rotationRate.beta)/arr.length;
@@ -631,6 +680,7 @@ function energy(arr,currentos)
 		}
 		else
 		{
+			
 			energy.alpha+= (arr[i].rotationRate.alpha)*(arr[i].rotationRate.alpha);
 			energy.beta += (arr[i].rotationRate.beta) *(arr[i].rotationRate.beta);
 			energy.gamma+= (arr[i].rotationRate.gamma)*(arr[i].rotationRate.gamma);
@@ -721,7 +771,52 @@ function mapTilting()
 		"signP" : -1,
 		"signL" : 1,
 		"signLL" : 1
+		},
+	"tiltSouthEast" : 
+		{
+		"first" : "up",
+		"second" : "right"
+		
+		},
+		
+	"tiltSouthWest" : 
+		{
+		"first" : "up",
+		"second" : "left"
+		},
+		
+	"tiltNorthEast" : 
+		{
+		"first" : "down",
+		"second" : "right"
+		},
+		
+	"tiltNorthWest" : 
+		{
+		"first" : "down",
+		"second" : "left"
 		}
+		
+	}
+	
+	return map;
+
+}
+//map to quickly check tiltse tiltsw tiltne tiltnw
+function mapComb()
+{
+	var map = {
+	"tiltDowntiltLeft" : "tiltNorthWest",
+	"tiltLefttiltDown" : "tiltNorthWest",
+	
+	"tiltDowntiltRight": "tiltNorthEast",
+	"tiltRighttiltDown":  "tiltNorthEast",
+	
+	"tiltUptiltLeft":  "tiltSouthWest",
+	"tiltLefttiltUp" :  "tiltSouthWest",
+	
+	"tiltUptiltRight":  "tiltSouthEast",
+	"tiltRighttiltUp":  "tiltSouthEast",
 		
 	}
 	
@@ -737,13 +832,33 @@ function setThresholds (tat)
 	{
 		if(tat[option].th !== undefined)
 		{
-			tat[option].th = tat[option]["th_"+currentos];
+
+			if(tat._currentbr!=="firefox")
+			{
+				tat[option].th = tat[option]["th_"+currentos];
+			}
+			else
+			{
+				tat[option].th = tat[option]["th_firefox"];
+			}	
 			
 		}
 		
 	}
 	
 
+}
+
+//set current dimbufferdiscard (depending on browser) for each tilting interaction
+function setBufferDiscard (tat)
+{
+	var currentos = tat._currentos;
+	if((tat._currentbr==="firefox"))
+	{
+		tat.dimbufferdiscard = tat.dimbufferdiscard_fir;
+	}
+		
+	
 }
 
 
