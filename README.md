@@ -129,6 +129,7 @@ For each tilting interaction we support a number of sub-options that can be defi
 | ------------- |:-------------| :-----:| :-----|
 | __callback__   | callback function to be called once the tilt gesture was recognized  | null| an existing function |
 | __th_android__      | Threshold of gesture for Android devices |   75 | any number  |
+| __th_firefox__      | Threshold of gesture for Firefox Browsers |   75 | any number  |
 | __th_ios__      | Threshold of gesture for iOS |   180 | any number  |
 | __touch__ | Tilting gesture can be combined with an additional touch interaction. This option indicates which interaction has to be performed.   |    "none" | "hold" or any positive integer number|
 | __element__ | It indicates where the touch interaction (if indicated) has to be performed.   |    null | a valid ID of an existing element in the DOM|
@@ -141,6 +142,7 @@ Global option of the plugin.
 | __frequency__   | It indicates how frequent motion data should be retrieved | 50 (milliseconds) |  any positive number |
 | __dimbuffer__   | It indicades how fast the gestures should be. The smaller the number the faster [0,+inf] | 3| any positive interger number |
 | __dimbufferdiscard__   | It indicates how many data the framework should discard after a gesture was recognized| 20 |  any positive interger number |
+| __dimbufferdiscard_fir__   | It indicates how many data the framework should discard after a gesture was recognized for Firefox | 100 |  any positive interger number |
 | __tap_interval__   | It indicates the maximum interval between taps | 200 (milliseconds) |  any positive number |
 | __taphold_interval__   | It indicates the minimum interval for a tap hold interaction| 200 (milliseconds) |  any positive  number |
 | __overlap__   | Tilt-and-Tap uses a window overlap method to recognize gestures. This value indicate how big the overlap should be. | 1 |  any positive interger number |
