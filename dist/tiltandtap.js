@@ -234,7 +234,7 @@
 				tat._defaultInterval = eventData.interval;
 			}
 			
-			tat._realFrequency   = calculateRealFrequency(tat.frequency,tat._defaultInterval);
+			tat._realFrequency   = calculateRealFrequency(tat.frequency);
 			
 			tat._nex++;
 		}
@@ -623,19 +623,15 @@ function hasAlreadyListners(arr,el)
  given the frequency specified by the user and the interval given by the browser
  calculates real frequency to obtain motion data
  */
-function calculateRealFrequency(frequency, interval){
+function calculateRealFrequency(frequency){
 
 
-	if((frequency<50) || (frequency>=100))
+	if(frequency!=50)
 	{
-		console.warn('It is advided to use a frequency between 50 to 100ms');
-		div = 50;
+		console.warn('It is advided to use a frequency between 50 to 100ms. Also remeber to adapt dimbuffer according to your new frequency');
 	}
-	else
-	{
-		div = frequency;
-	}		
 	
+	div = frequency;
 	
 	return div;
 
