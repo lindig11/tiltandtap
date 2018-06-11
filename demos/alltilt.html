@@ -24,10 +24,10 @@
 
 <script>
 var mytat = new tiltandtap({
-	tiltLeft :  {callback:left},
-	tiltRight : {callback:right},
-	tiltUp :    {callback:up, vibrationfeedback:200},
-	tiltDown:   {callback:down, audiofeedback:"click.mp3"},
+	tiltLeft :  {callback:left, visualfeedback:"blue"},
+	tiltRight : {callback:right, visualfeedback:"blue"},
+	tiltUp :    {callback:up, vibrationfeedback:200, visualfeedback:"blue"},
+	tiltDown:   {callback:down, audiofeedback:"click.mp3", visualfeedback:"blue"},
 	tiltClockwise: {callback:clockwise},
 	tiltConterclockwise : {callback: cc},
 	//tiltSouthEast : {callback: se},

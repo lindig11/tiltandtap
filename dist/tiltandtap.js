@@ -342,9 +342,98 @@ Execute feedback once a tilt gesture has been performed
 		var audio = document.getElementById("audio"+file);
 		audio.play();
 		
+		console.warn("Some browsers might not support this feature");
+	}
+	
+	//VISUAL FEEDBACK
+	if(tat[obj].visualfeedback!=="none")
+	{
+		var line =document.getElementById("line");
+		if(!line)
+		{
+		    line = document.createElement("div");
+			line.id = "line";
+			line.style.position = "fixed";
+			line.style.zIndex = 100000000;
+		}
+		
+		
+		var dirvf = visualFeedbackTiltDirection(obj);
+		
+		line.style.width = dirvf.width;
+		line.style.height =dirvf.height;
+		line.style.left = dirvf.left;
+		line.style.bottom = dirvf.bottom;
+		
+		
+		line.style.background = "linear-gradient(to "+dirvf.dir+", white, " + tat[obj].visualfeedback + ")";
+		
+		console.log("linear-gradient(to "+dirvf.dir+", white, " + tat[obj].visualfeedback + ")");
+		var doc_body = document.body;
+        doc_body.insertBefore(line, doc_body.childNodes[0]);
+		
+		
+		fadeIn(line);
+		
+		setTimeout(function () {
+		fadeOut(line);
+		},700);
+		
+		
 	}
  
  } 
+
+ 
+ function visualFeedbackTiltDirection (tilt)
+ {
+	 var to_return = {
+	 dir : "",
+	 width : "",
+	 height :"",
+	 left: "",
+	 bottom: ""
+	 }
+	 
+	if(tilt==="tiltUp")
+	{
+		to_return.dir = "bottom";
+		to_return.width = "100%";
+		to_return.height = "10%";
+		to_return.left = "0%";
+		to_return.bottom = "0%";
+		return to_return;
+	}
+	if(tilt==="tiltDown")
+	{
+		to_return.dir = "top";
+		to_return.width = "100%";
+		to_return.height = "10%";
+		to_return.left = "0%";
+		to_return.bottom = "90%";
+		return to_return;
+	}
+	if(tilt==="tiltLeft")
+	{
+		to_return.dir = "right";
+		to_return.width = "10%";
+		to_return.height = "100%";
+		to_return.left = "90%";
+		to_return.bottom = "0%";
+		return to_return;
+	}
+	if(tilt==="tiltRight")
+	{
+		to_return.dir = "left";
+		to_return.width = "10%";
+		to_return.height = "100%";
+		to_return.left = "0%";
+		to_return.bottom = "0%";
+		return to_return;
+	}
+	
+	 
+ }
   
   
   /*
@@ -1051,7 +1140,33 @@ function checkOperatingSystem() {
     return "unknown";
 }
 
+ //http://www.chrisbuttery.com/articles/fade-in-fade-out-with-javascript/
+ function fadeOut(el){
+  el.style.opacity = 1;
 
+  (function fade() {
+    if ((el.style.opacity -= .1) < 0) {
+      el.style.display = "none";
+    } else {
+      requestAnimationFrame(fade);
+    }
+  })();
+}
+
+// fade in
+
+function fadeIn(el, display){
+  el.style.opacity = 0;
+  el.style.display = display || "block";
+
+  (function fade() {
+    var val = parseFloat(el.style.opacity);
+    if (!((val += .1) > 1)) {
+      el.style.opacity = val;
+      requestAnimationFrame(fade);
+    }
+  })();
+}
  
 
 }());
