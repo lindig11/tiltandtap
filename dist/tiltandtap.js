@@ -141,18 +141,20 @@
 		var tat = this;
 		//tilts that dev wants to be performed
 		tat._ttoperform = tiltToPerform(tat);
-		//set the map that associates tilting and alpha,beta,gamma and signs
-		tat._mapEvent   = mapTilting();
-		tat._mapComb = mapComb();
+		
 		//check the browser 
 		tat._currentbr  = checkBrowser();
 		//check current os
 		tat._currentos = checkOperatingSystem();
 		
+		//set the map that associates tilting and alpha,beta,gamma and signs
+		tat._mapEvent   = mapTilting(tat._currentos);
+		tat._mapComb = mapComb();
+		
 		//set right th for all tilting
 		setThresholds(tat);
 		
-
+	
 		
 		//touch events, if dev indicated so
 		tat._tiltingtouch = associateTouchEvents(tat);
@@ -193,26 +195,10 @@
   function deviceMotionHandler (eventData, tat)
   {
 	  
-	/*if(count===0)
-	{
-		console.log(eventData);
-		ts = eventData.timeStamp;
-
-		count++;
-		return;
-	}
-	else if (count===1)
-	{
+	
+	//console.log(eventData);
 		
-		var ts2 = eventData.timeStamp;
-		console.log(eventData);
-		ts = ts2-ts;
-		console.log(ts);
-		
-		document.getElementById("test").innerHTML = ts;
-		count++;
-	}
-	*/
+	
 
 	if(tat._ready)
 	{
@@ -276,7 +262,7 @@
 		}
 		else
 		{
-			console.log(eventData);
+			
 			//if tilting interaction wanted by dev 
 			if(tat._ttoperform.includes(obj.type)){
 				//execute callback function defined by dev. and check if it is a function
@@ -345,20 +331,25 @@
 				//if orientation of the device is landscape use L value of the map
 				var orientation = checkCurrentOrientationDevice();
 				
-				abg=infotilt["rotationRate"+orientation];
+				var patch = "";
+				
+			
+				
+				abg=infotilt["rotationRate"+patch+orientation];
 				sign = infotilt["sign"+orientation];
 				
 				var acc_last_value = tat.buffer[tat.dimbuffer-1].rotationRate[abg];
 				
 				if(Math.abs(energy_rr[abg])>=tat[tilt].th)
 					{
-						
+						//console.log(energy_rr[abg]);
 						if(acc_last_value * sign >0)
 						{
-							
+							console.log(energy_rr)
 							//checks if some touch interactions where required
 							if(isTouchRequired(tilt,tat._tiltingtouch))
 							{
+								
 								to_return.tilt = true;
 								to_return.type = tilt;
 								
@@ -366,7 +357,7 @@
 						}
 					}
 				//lower of a factor the se ne sw and nw tilt	
-				var fact = ((tat[tilt].th_se_factor * tat[tilt].th) /100);
+				var fact = ((tat[tilt].th_se_factor * tat[tilt].th) / 100);
 				var newth = tat[tilt].th - fact;
 				
 				if(Math.abs(energy_rr[abg]) >=newth)
@@ -388,6 +379,7 @@
 	//console.log(performedtilt);
 	if (performedtilt.length===2)
 	{
+		
 		console.log(performedtilt);
 		var comb = performedtilt[0]+performedtilt[1];
 		to_return.tilt = true;
@@ -664,15 +656,17 @@ function energy(arr,currentos,currentbr)
 	arr: new Array ()
 	};
 	
-	
+	console.log(currentbr);
 	
 	for (var i =0; i<arr.length; i++)
 	{
-		if((currentos === "ios") || (currentbr === "firefox"))
+
+		
+		if((currentos === "ios") || (currentbr === "firefox") || (currentbr === "chrome") )
 		{
-			energy.alpha+= (arr[i].rotationRate.alpha)/arr.length;
-			energy.beta += (arr[i].rotationRate.beta)/arr.length;
-			energy.gamma+= (arr[i].rotationRate.gamma)/arr.length;
+			energy.alpha+= arr[i].rotationRate.alpha/arr.length;
+			energy.beta += arr[i].rotationRate.beta/arr.length;
+			energy.gamma+= arr[i].rotationRate.gamma/arr.length;
 			
 			energy.a = arr[i].rotationRate.alpha;
 			energy.b = arr[i].rotationRate.beta;
@@ -681,6 +675,7 @@ function energy(arr,currentos,currentbr)
 			energy.arr = arr;
 			
 		}
+		
 		else
 		{
 			
@@ -690,7 +685,7 @@ function energy(arr,currentos,currentbr)
 			energy.arr = arr;
 		}
 
-		//DEBUG FOR iOS
+
 
 	}
 	
@@ -700,13 +695,15 @@ function energy(arr,currentos,currentbr)
 }
 
 
+
 //map that associates tilting interaction and their corresponding rotationRate and accelerationIncludingGravity variables
 //NOTE I could have  a switch case in the motion event HOWEVER this will cost o(s) every x millisecond
 //this solution does not look that nice but it is more performant
 //TODO: iOS support
 //TODO: check orientation on portrait upside down (my phone does not support it)
-function mapTilting()
+function mapTilting(br)
 {
+
 	var map  = {
 	"tiltLeft" : 
 		{
@@ -714,17 +711,30 @@ function mapTilting()
 		"rotationRateP" : "beta",
 		"rotationRateL" : "alpha",
 		"rotationRateLL" : "alpha",
+		
+		"rotationRateC" : "gamma",
+		"rotationRateCP" : "gamma",
+		"rotationRateCL" : "beta",
+		"rotationRateCLL" : "beta",
+		
 		"sign"  : -1,
 		"signP" : 1,
 		"signL" : 1,
 		"signLL" : -1
 		},
+		
 	"tiltRight" : 
 		{
 		"rotationRate" : "beta",
 		"rotationRateP" : "beta",
 		"rotationRateL" : "alpha",
 		"rotationRateLL" : "alpha",
+		
+		"rotationRateC" : "gamma",
+		"rotationRateCP" : "gamma",
+		"rotationRateCL" : "beta",
+		"rotationRateCLL" : "beta",
+		
 		"sign"  : 1,
 		"signP" : -1,
 		"signL" : -1,
@@ -736,6 +746,12 @@ function mapTilting()
 		"rotationRateP" : "beta",
 		"rotationRateL" : "beta",
 		"rotationRateLL" : "beta",
+		
+		"rotationRateC" : "beta",
+		"rotationRateCP" : "beta",
+		"rotationRateCL" : "gamma",
+		"rotationRateCLL" : "gamma",
+		
 		"sign"  : 1,
 		"signP" : -1,
 		"signL" : 1,
@@ -747,6 +763,12 @@ function mapTilting()
 		"rotationRateP" : "beta",
 		"rotationRateL" : "beta",
 		"rotationRateLL" : "beta",
+		
+		"rotationRateC" : "beta",
+		"rotationRateCP" : "beta",
+		"rotationRateCL" : "gamma",
+		"rotationRateCLL" : "gamma",
+		
 		"sign"  : -1,
 		"signP" : 1,
 		"signL" : -1,
@@ -758,6 +780,12 @@ function mapTilting()
 		"rotationRateP" : "gamma",
 		"rotationRateL" : "gamma",
 		"rotationRateLL" : "gamma",
+		
+		"rotationRateC" : "alpha",
+		"rotationRateCP" : "alpha",
+		"rotationRateCL" : "alpha",
+		"rotationRateCLL" : "alpha",
+		
 		"sign" : -1,
 		"signP" : 1,
 		"signL" : -1,
@@ -770,6 +798,12 @@ function mapTilting()
 		"rotationRateP" : "gamma",
 		"rotationRateL" : "gamma",
 		"rotationRateLL" : "gamma",
+		
+		"rotationRateC" : "alpha",
+		"rotationRateCP" : "alpha",
+		"rotationRateCL" : "alpha",
+		"rotationRateCLL" : "alpha",
+		
 		"sign" : 1,
 		"signP" : -1,
 		"signL" : 1,
@@ -801,7 +835,12 @@ function mapTilting()
 		}
 		
 	}
+
+
 	
+	
+
+
 	return map;
 
 }
@@ -931,7 +970,7 @@ function checkBrowser() {
 		return SAF;
 	}
 	//Chrome
-	if(!!window.chrome && !!window.chrome.webstore)
+	if((/Chrome/.test(navigator.userAgent)) && (/Google Inc/.test(navigator.vendor)))
 	{
 		return CHR;
 	}
