@@ -60,6 +60,9 @@
 	this.taphold_interval = 200;
 	this.touch_interval = 200;
 	
+	
+	
+	
 	//utility variables
 	//array of tilting interactions that dev want to perform
 	this._ttoperform = new Array;
@@ -267,6 +270,8 @@
 			if(tat._ttoperform.includes(obj.type)){
 				//execute callback function defined by dev. and check if it is a function
 				if(typeof tat[obj.type].callback ===  "function") {
+					
+					feedback (tat,obj.type);
 					tat[obj.type].callback.call(this);
 				}
 				else {
@@ -302,6 +307,46 @@
 		
   }
 
+  
+/*
+Execute feedback once a tilt gesture has been performed
+*/
+ function feedback (tat,obj)
+ {
+	//VIBRATION
+	if(tat[obj].vibrationfeedback!=="none")
+	{
+		
+		if(tat._currentbr === "chrome")
+		{
+			
+			window.navigator.vibrate(tat[obj].vibrationfeedback);
+		}
+		else
+		{
+			console.warn("Unfortunately only Chrome supports vibration");
+		}
+		
+	}
+	//AUDIO FEEDBACK
+	if(tat[obj].audiofeedback!=="none")
+	{
+		var file = tat[obj].audiofeedback;
+		var audio_tag = "<audio id='audio"+file+"'> <source src="+file+" type='audio/mpeg'> </audio>"
+		
+		var audio = document.createElement("div");
+		audio.innerHTML = audio_tag;
+		var body = document.getElementsByTagName("body");
+		body[0].appendChild(audio);
+		
+		var audio = document.getElementById("audio"+file);
+		audio.play();
+		
+	}
+ 
+ } 
+  
+  
   /*
 	checks if users performed one of the tilting interactions defined by the dev.
 	return an object with a tilt parameter: true if tilting performed false otw. and the type of tilting gesture performed

@@ -26,8 +26,8 @@
 var mytat = new tiltandtap({
 	tiltLeft :  {callback:left},
 	tiltRight : {callback:right},
-	tiltUp :    {callback:up},
-	tiltDown:   {callback:down},
+	tiltUp :    {callback:up, vibrationfeedback:200},
+	tiltDown:   {callback:down, audiofeedback:"click.mp3"},
 	tiltClockwise: {callback:clockwise},
 	tiltConterclockwise : {callback: cc},
 	//tiltSouthEast : {callback: se},
