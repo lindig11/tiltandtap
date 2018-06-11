@@ -317,15 +317,14 @@ Execute feedback once a tilt gesture has been performed
 	if(tat[obj].vibrationfeedback!=="none")
 	{
 		
-		if(tat._currentbr === "chrome")
-		{
-			
-			window.navigator.vibrate(tat[obj].vibrationfeedback);
-		}
-		else
-		{
-			console.warn("Unfortunately only Chrome supports vibration");
-		}
+		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+        if (navigator.vibrate) {
+            navigator.vibrate(tat[obj].vibrationfeedback);
+        }
+        else {
+           console.warn("vibration not supported");
+        }
 		
 	}
 	//AUDIO FEEDBACK
@@ -342,33 +341,45 @@ Execute feedback once a tilt gesture has been performed
 		var audio = document.getElementById("audio"+file);
 		audio.play();
 		
-		console.warn("Some browsers might not support this feature");
+		console.warn("Some browsers might not support the AUDIO tag feature");
 	}
 	
 	//VISUAL FEEDBACK
 	if(tat[obj].visualfeedback!=="none")
 	{
+		
 		var line =document.getElementById("line");
 		if(!line)
 		{
-		    line = document.createElement("div");
+			line = document.createElement("div");
 			line.id = "line";
 			line.style.position = "fixed";
 			line.style.zIndex = 100000000;
 		}
 		
 		
-		var dirvf = visualFeedbackTiltDirection(obj);
+		if(obj==="tiltClockwise" || obj==="tiltCounterclock" || obj==="tiltNorthWest" || obj==="tiltNorthEast" || obj==="tiltSouthWest" || obj==="tiltSouthEast" )
+		{
+
+			var tri = document.createElement("tri");
+			
+		}		
 		
-		line.style.width = dirvf.width;
-		line.style.height =dirvf.height;
-		line.style.left = dirvf.left;
-		line.style.bottom = dirvf.bottom;
+		else
+		{
+			
+			var dirvf = visualFeedbackTiltDirection(obj);
+			
+			line.style.width = dirvf.width;
+			line.style.height =dirvf.height;
+			line.style.left = dirvf.left;
+			line.style.bottom = dirvf.bottom;
+			
+			line.style.background = "linear-gradient(to "+dirvf.dir+", white, " + tat[obj].visualfeedback + ")";
+		
+		}
 		
 		
-		line.style.background = "linear-gradient(to "+dirvf.dir+", white, " + tat[obj].visualfeedback + ")";
-		
-		console.log("linear-gradient(to "+dirvf.dir+", white, " + tat[obj].visualfeedback + ")");
 		var doc_body = document.body;
         doc_body.insertBefore(line, doc_body.childNodes[0]);
 		
@@ -384,7 +395,7 @@ Execute feedback once a tilt gesture has been performed
  
  } 
 
- 
+ //depending on the tilt, it renders the right visual feedback
  function visualFeedbackTiltDirection (tilt)
  {
 	 var to_return = {
@@ -394,7 +405,7 @@ Execute feedback once a tilt gesture has been performed
 	 left: "",
 	 bottom: ""
 	 }
-	 
+	 console.log(tilt);
 	if(tilt==="tiltUp")
 	{
 		to_return.dir = "bottom";
@@ -429,6 +440,32 @@ Execute feedback once a tilt gesture has been performed
 		to_return.height = "100%";
 		to_return.left = "0%";
 		to_return.bottom = "0%";
+		return to_return;
+	}
+	
+	if(tilt==="tiltClockwise")
+	{
+		to_return.dir = "bottom";
+		
+		
+		to_return.width = "10%";
+		to_return.height = "100%";
+		
+		
+		to_return.left = "0%";
+		to_return.bottom = "0%";
+		
+		return to_return;
+	}
+	
+	if(tilt==="tiltCounterclock")
+	{
+		to_return.dir = "bottom";
+		to_return.width = "10%";
+		to_return.height = "100%";
+		to_return.left = "0%";
+		to_return.bottom = "0%";
+		
 		return to_return;
 	}
 	
