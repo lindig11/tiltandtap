@@ -30,10 +30,10 @@ var mytat = new tiltandtap({
 	tiltDown:   {callback:down, audiofeedback:"click.mp3", visualfeedback:"blue"},
 	tiltClockwise: {callback:clockwise, visualfeedback:"blue"},
 	tiltConterclockwise : {callback: cc,visualfeedback:"blue"},
-	//tiltSouthEast : {callback: se},
-	//tiltSouthWest : {callback: sw},
-	//tiltNorthEast : {callback: ne},
-	//tiltNorthWest : {callback: nw}
+	tiltSouthEast : {callback: se,visualfeedback:"blue"},
+	tiltSouthWest : {callback: sw,visualfeedback:"blue"},
+	tiltNorthEast : {callback: ne,visualfeedback:"blue"},
+	tiltNorthWest : {callback: nw,visualfeedback:"blue"}
 });
 
 var box = document.querySelector("#box");

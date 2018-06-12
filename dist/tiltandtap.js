@@ -420,16 +420,27 @@ Execute feedback once a tilt gesture has been performed
 	 var tenwidth = (10*window.innerWidth)/100;
 	 var tenheight = (10*window.innerHeight)/100;
 	 
-	 if(tilt === "tiltClockwise")
+	 if((tilt === "tiltClockwise") || (tilt==="tiltNorthEast"))
 	 {
 		 style += "top: -"+tenwidth+"px; right:0px; border-top: "+tenwidth+"px solid transparent; border-bottom: "+tenwidth+"px solid transparent; border-right:"+tenwidth+"px solid "+color+";"
 		
 	 }
-	  if(tilt === "tiltConterclockwise")
+	 if((tilt === "tiltConterclockwise") || (tilt==="tiltNorthWest"))
 	 {
 		 style += "top: -"+tenwidth+"px; left:0px; border-top: "+tenwidth+"px solid transparent; border-bottom: "+tenwidth+"px solid transparent; border-left:"+tenwidth+"px solid "+color+";"
 		
 	 }
+	 if(tilt === "tiltSouthWest") 
+	 {
+		 style += "bottom: -"+tenwidth+"px; left:0px; border-top: "+tenwidth+"px solid transparent; border-bottom: "+tenwidth+"px solid transparent; border-left:"+tenwidth+"px solid "+color+";"
+		
+	 }
+	 if(tilt === "tiltSouthEast")
+	 {
+		  style += "bottom: -"+tenwidth+"px; right:0px; border-top: "+tenwidth+"px solid transparent; border-bottom: "+tenwidth+"px solid transparent; border-right:"+tenwidth+"px solid "+color+";"
+		
+	 }
+	 
 	 
 	 
 	 return style;
