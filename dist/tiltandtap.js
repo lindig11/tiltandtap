@@ -348,25 +348,42 @@ Execute feedback once a tilt gesture has been performed
 	if(tat[obj].visualfeedback!=="none")
 	{
 		
-		var line =document.getElementById("line");
-		if(!line)
-		{
-			line = document.createElement("div");
-			line.id = "line";
-			line.style.position = "fixed";
-			line.style.zIndex = 100000000;
-		}
-		
-		
-		if(obj==="tiltClockwise" || obj==="tiltCounterclock" || obj==="tiltNorthWest" || obj==="tiltNorthEast" || obj==="tiltSouthWest" || obj==="tiltSouthEast" )
+		if(obj==="tiltClockwise" || obj==="tiltConterclockwise" || obj==="tiltNorthWest" || obj==="tiltNorthEast" || obj==="tiltSouthWest" || obj==="tiltSouthEast" )
 		{
 
-			var tri = document.createElement("tri");
+			var tri = document.getElementById("tri");
+			
+			
+			if(!tri)
+			{
+				tri= document.createElement("div");
+				tri.id="tri";
+				
+			}
+			
+			tri.style ="";
+			tri.style.cssText = "width:0; height:0;"+visualFeedbackTiltDirectionE(obj,tat[obj].visualfeedback);
+			var doc_body_tri = document.body;
+			doc_body_tri.insertBefore(tri, doc_body_tri.childNodes[0]);
+			
+			fadeIn(tri);
+			
+			setTimeout(function () {
+			fadeOut(tri);
+			},700);
 			
 		}		
 		
 		else
 		{
+			var line =document.getElementById("line");
+			if(!line)
+			{
+				line = document.createElement("div");
+				line.id = "line";
+				line.style.position = "fixed";
+				line.style.zIndex = 100000000;
+			}
 			
 			var dirvf = visualFeedbackTiltDirection(obj);
 			
@@ -376,26 +393,49 @@ Execute feedback once a tilt gesture has been performed
 			line.style.bottom = dirvf.bottom;
 			
 			line.style.background = "linear-gradient(to "+dirvf.dir+", white, " + tat[obj].visualfeedback + ")";
+			
+			
+			var doc_body = document.body;
+			doc_body.insertBefore(line, doc_body.childNodes[0]);
+			
+			
+			fadeIn(line);
+			
+			setTimeout(function () {
+			fadeOut(line);
+			},700);
 		
 		}
-		
-		
-		var doc_body = document.body;
-        doc_body.insertBefore(line, doc_body.childNodes[0]);
-		
-		
-		fadeIn(line);
-		
-		setTimeout(function () {
-		fadeOut(line);
-		},700);
 		
 		
 	}
  
  } 
+ 
+ //depending on the tilt, it renders the right visual feedback (all east/west and clock, counterclock cases
+ function visualFeedbackTiltDirectionE (tilt,color)
+ {
+	 var style="position: fixed; z-index: 1000000000; ";
+	 
+	 var tenwidth = (10*window.innerWidth)/100;
+	 var tenheight = (10*window.innerHeight)/100;
+	 
+	 if(tilt === "tiltClockwise")
+	 {
+		 style += "top: -"+tenwidth+"px; right:0px; border-top: "+tenwidth+"px solid transparent; border-bottom: "+tenwidth+"px solid transparent; border-right:"+tenwidth+"px solid "+color+";"
+		
+	 }
+	  if(tilt === "tiltConterclockwise")
+	 {
+		 style += "top: -"+tenwidth+"px; left:0px; border-top: "+tenwidth+"px solid transparent; border-bottom: "+tenwidth+"px solid transparent; border-left:"+tenwidth+"px solid "+color+";"
+		
+	 }
+	 
+	 
+	 return style;
+ }
 
- //depending on the tilt, it renders the right visual feedback
+ //depending on the tilt, it renders the right visual feedback (all but for the clock, counterclock and all east and west)
  function visualFeedbackTiltDirection (tilt)
  {
 	 var to_return = {
@@ -413,7 +453,7 @@ Execute feedback once a tilt gesture has been performed
 		to_return.height = "10%";
 		to_return.left = "0%";
 		to_return.bottom = "0%";
-		return to_return;
+		
 	}
 	if(tilt==="tiltDown")
 	{
@@ -422,7 +462,7 @@ Execute feedback once a tilt gesture has been performed
 		to_return.height = "10%";
 		to_return.left = "0%";
 		to_return.bottom = "90%";
-		return to_return;
+
 	}
 	if(tilt==="tiltLeft")
 	{
@@ -431,7 +471,7 @@ Execute feedback once a tilt gesture has been performed
 		to_return.height = "100%";
 		to_return.left = "90%";
 		to_return.bottom = "0%";
-		return to_return;
+
 	}
 	if(tilt==="tiltRight")
 	{
@@ -440,34 +480,10 @@ Execute feedback once a tilt gesture has been performed
 		to_return.height = "100%";
 		to_return.left = "0%";
 		to_return.bottom = "0%";
-		return to_return;
+		
 	}
 	
-	if(tilt==="tiltClockwise")
-	{
-		to_return.dir = "bottom";
-		
-		
-		to_return.width = "10%";
-		to_return.height = "100%";
-		
-		
-		to_return.left = "0%";
-		to_return.bottom = "0%";
-		
-		return to_return;
-	}
-	
-	if(tilt==="tiltCounterclock")
-	{
-		to_return.dir = "bottom";
-		to_return.width = "10%";
-		to_return.height = "100%";
-		to_return.left = "0%";
-		to_return.bottom = "0%";
-		
-		return to_return;
-	}
+	return to_return;
 	
 	 
  }
