@@ -119,6 +119,35 @@ function down()
 }
 
 ```
+## Feedback
+
+Tilt-and-Tap offers three types of feedback (triggered once the gesture has been performed) visual, audio and vibration.
+In the example below we show how to trigger these feedback.
+All gesture have a visual feedback associated (a blue line will show on the display). When a tilt up gesture is performed, the phone will vibrate for 200ms. With a tilt down the phone will play an audio file "click.mp3". Please note that some of these features are not supported by all browsers and for some, it is required that the user touch the screen before the phone plays a sound or vibrates.
+
+###html
+```html
+<div id="box">
+<p id="result"> </p>
+</div>
+```
+###javascript
+```javascript
+var mytat = new tiltandtap({
+	tiltLeft :  {callback:left, visualfeedback:"blue"},
+	tiltRight : {callback:right, visualfeedback:"blue"},
+	tiltUp :    {callback:up, vibrationfeedback:200, visualfeedback:"blue"},
+	tiltDown:   {callback:down, audiofeedback:"click.mp3", visualfeedback:"blue"},
+	tiltClockwise: {callback:clockwise, visualfeedback:"blue"},
+	tiltConterclockwise : {callback: cc,visualfeedback:"blue"},
+	tiltSouthEast : {callback: se,visualfeedback:"blue"},
+	tiltSouthWest : {callback: sw,visualfeedback:"blue"},
+	tiltNorthEast : {callback: ne,visualfeedback:"blue"},
+	tiltNorthWest : {callback: nw,visualfeedback:"blue"}
+});
+
+
+```
 
 #Options
 
@@ -133,6 +162,10 @@ For each tilting interaction we support a number of sub-options that can be defi
 | __th_ios__      | Threshold of gesture for iOS |   180 | any number  |
 | __touch__ | Tilting gesture can be combined with an additional touch interaction. This option indicates which interaction has to be performed.   |    "none" | "hold" or any positive integer number|
 | __element__ | It indicates where the touch interaction (if indicated) has to be performed.   |    null | a valid ID of an existing element in the DOM|
+| __visualfeedback__ | A visual feedback will appear once the gesture has been performed.  |    "none" | a string containing the color of the feedback|
+| __vibrationfeedback__ | A vibration feedback will be executed once the gesture has been performed.   |    "none" | any positive number|
+| __audiofeedback__ | An audio feedback will be executed once the gesture has been performed.   |    "none" | path (string) of the audio file|
+
 
 ##global options
 Global option of the plugin.
